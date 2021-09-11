@@ -17,14 +17,14 @@ jobs:
       with:
         go-version: 1.16
 
-    - run: go build
+    - run: GOOS=linux GOARCH=amd64 go build -o argocd-templatize-linux-amd64
 
     - run: go test
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: argocd-templatize
+        files: argocd-templatize-linux-amd64
         draft: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
