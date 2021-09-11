@@ -1,0 +1,30 @@
+name: Automatic release
+
+on:
+  push:
+    tags:
+      - 'v*.*'
+
+jobs:
+
+  release:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - run: go build
+
+    - run: go test
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: argocd-templatize
+        draft: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
