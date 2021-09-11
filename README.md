@@ -1,13 +1,14 @@
 # argocd-templatize
 
-Templatize finds ./*.json and ./*.yaml and passes them through [text/template](https://pkg.go.dev/text/template) with the environment variables named TPZ_*.
-TPZ_SOME_THING is available as {{.SomeThing}} in the template.
+Templatize finds `./*.json` and `./*.yaml` and passes them through [text/template](https://pkg.go.dev/text/template) with the environment variables named `TPZ_*`.
+
+`TPZ_SOME_THING` is available as `{{.SomeThing}}` in the template.
 
 Its intended usage is as a custom plugin for argocd, to be able to use cluster specific variables in your YAML.
 
-You can install this into ArgoCD with the following Kustomization: https://github.com/Jille/argocd-templatize/blob/master/kustomization.yaml
+You can install this into [ArgoCD](https://argoproj.github.io/argo-cd/) with the following Kustomization: https://github.com/Jille/argocd-templatize/blob/master/kustomization.yaml
 
-Now you can enable templatize in your Application:
+Now you can enable templatize in your `Application`:
 
 ```diff
  apiVersion: argoproj.io/v1alpha1
