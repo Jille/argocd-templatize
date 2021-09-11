@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- argocd.yaml
+
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: argocd-cm
+  data:
+    configManagementPlugins: |
+      - name: templatize
+        generate:
+          command: ["/custom-tools/templatize"]
+          args: []
+
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: argocd-repo-server
+  patch: |-
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        emptyDir: {}
+        name: custom-tools
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        mountPath: /custom-tools
+        name: custom-tools
+    - op: add
+      path: /spec/template/spec/initContainers
+      value:
+        - name: download-templatize
+          image: alpine:3.8
+          command: [sh, -c]
+          args:
+          - "wget -qO /custom-tools/templatize https://github.com/Jille/argocd-templatize/releases/latest/download/argocd-templatize-linux-amd64 && chmod 555 /custom-tools/templatize"
+          volumeMounts:
+          - mountPath: /custom-tools
+            name: custom-tools
